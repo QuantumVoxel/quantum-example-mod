@@ -1,6 +1,8 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+//	id 'fabric-loom' version '1.10-SNAPSHOT' // TODO Fork Fabric Loom for Quantum Voxel instead of Minecraft
 	id 'maven-publish'
+	id 'java'
+	id 'java-library'
 }
 
 version = project.mod_version
@@ -16,29 +18,62 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-}
+	mavenCentral()
 
-loom {
-	splitEnvironmentSourceSets()
-
-	mods {
-		"modid" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
+	maven {
+		url = uri("https://maven.pkg.github.com/Ultreon/scriptic-lang")
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
 		}
 	}
 
+	maven {
+		url = uri("https://maven.pkg.github.com/QuantumVoxel/game")
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+		}
+	}
+
+	maven { url "https://maven.fabricmc.net/" }
+
+	maven { url "https://jitpack.io" }
+}
+
+sourceSets {
+	client {
+		java.srcDirs += "src/client/java"
+		resources.srcDirs += "src/client/resources"
+
+		compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+	}
+
+	server {
+		java.srcDirs += "src/server/java"
+		resources.srcDirs += "src/server/resources"
+
+		compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+	}
+
+	main {
+		runtimeClasspath += sourceSets.client.output + sourceSets.server.output
+	}
 }
 
 dependencies {
 	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	clientImplementation "quantumvoxel:lwjgl3:0.0.5-SNAPSHOT"
+	clientImplementation "quantumvoxel:client:0.0.5-SNAPSHOT"
+	implementation "quantumvoxel:common:0.0.5-SNAPSHOT"
+	serverImplementation "quantumvoxel:server:0.0.5-SNAPSHOT"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+	runtimeOnly "quantumvoxel:gameprovider:0.0.5-SNAPSHOT"
+
+	// Fabric
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:sponge-mixin:${project.mixin_version}"
+
 }
 
 processResources {
@@ -47,10 +82,20 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
 	}
+
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processClientResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processServerResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 17
 }
 
 java {
@@ -59,12 +104,34 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.register("runClient", JavaExec) {
+	dependsOn classes
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	classpath = sourceSets.main.runtimeClasspath + sourceSets.main.output
+
+	if (System.getProperty("os.name").contains("Mac")) {
+		jvmArgs "-XstartOnFirstThread", "-Dfabric.development=true"
+	}
+
+	workingDir = file("run")
+}
+
+tasks.register("runServer", JavaExec) {
+	dependsOn classes
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotServer"
+	classpath = sourceSets.main.runtimeClasspath + sourceSets.main.output
+
+	workingDir = file("run")
 }
 
 jar {
 	inputs.property "archivesName", project.base.archivesName
+
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}

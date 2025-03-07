@@ -27,13 +27,16 @@
 		{
 			"config": "modid.client.mixins.json",
 			"environment": "client"
+		},
+		{
+			"config": "modid.server.mixins.json",
+			"environment": "server"
 		}
 	],
 	"depends": {
 		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.4",
-		"java": ">=21",
-		"fabric-api": "*"
+		"quantum": ">=0.0.5-SNAPSHOT",
+		"java": ">=17"
 	},
 	"suggests": {
 		"another-mod": "*"
