@@ -20,14 +20,6 @@ repositories {
 	// for more information about repositories.
 	mavenCentral()
 
-	maven {
-		url = uri("https://maven.pkg.github.com/Ultreon/scriptic-lang")
-		credentials {
-			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-			password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-		}
-	}
-
 	maven { url "https://maven.fabricmc.net/" }
 
 	maven { url "https://jitpack.io" }
@@ -37,9 +29,8 @@ repositories {
 	maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
 
 	// At bottom to prevent download errors
-	maven {
-		url = uri("https://maven.ultreon.dev/releases")
-	}
+	maven { url = uri("https://maven.ultreon.dev/releases") }
+	maven { url = uri("https://maven.ultreon.dev/snapshots") }
 }
 
 sourceSets {
