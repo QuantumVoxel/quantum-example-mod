@@ -2,7 +2,6 @@ package com.example.mixin;
 
 import com.example.ExampleMod;
 import dev.ultreon.quantum.registry.Registries;
-import dev.ultreon.quantum.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

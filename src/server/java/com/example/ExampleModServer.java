@@ -1,9 +1,6 @@
 package com.example;
 
-import dev.ultreon.quantum.Logger;
-import dev.ultreon.quantum.LoggerFactory;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
 
 public class ExampleModServer implements DedicatedServerModInitializer {
 	@Override

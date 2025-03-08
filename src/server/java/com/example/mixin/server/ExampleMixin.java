@@ -1,7 +1,6 @@
 package com.example.mixin.server;
 
 import com.example.ExampleMod;
-import dev.ultreon.quantum.registry.Registries;
 import dev.ultreon.quantum.server.QuantumVoxelServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

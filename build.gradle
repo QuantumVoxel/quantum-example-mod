@@ -28,17 +28,18 @@ repositories {
 		}
 	}
 
-	maven {
-		url = uri("https://maven.pkg.github.com/QuantumVoxel/game")
-		credentials {
-			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-			password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-		}
-	}
-
 	maven { url "https://maven.fabricmc.net/" }
 
 	maven { url "https://jitpack.io" }
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+	maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
+	maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+	maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
+
+	// At bottom to prevent download errors
+	maven {
+		url = uri("https://maven.ultreon.dev/releases")
+	}
 }
 
 sourceSets {
@@ -63,12 +64,12 @@ sourceSets {
 
 dependencies {
 	// To change the versions see the gradle.properties file
-	clientImplementation "quantumvoxel:lwjgl3:0.0.5-SNAPSHOT"
-	clientImplementation "quantumvoxel:client:0.0.5-SNAPSHOT"
-	implementation "quantumvoxel:common:0.0.5-SNAPSHOT"
-	serverImplementation "quantumvoxel:server:0.0.5-SNAPSHOT"
+	clientImplementation "dev.ultreon.quantum:quantum-lwjgl3-v2:0.0.5"
+	clientImplementation "dev.ultreon.quantum:quantum-client-v2:0.0.5"
+	implementation "dev.ultreon.quantum:quantum-common-v2:0.0.5"
+	serverImplementation "dev.ultreon.quantum:quantum-server-v2:0.0.5"
 
-	runtimeOnly "quantumvoxel:gameprovider:0.0.5-SNAPSHOT"
+	runtimeOnly "dev.ultreon.quantum:quantum-gameprovider-v2:0.0.5"
 
 	// Fabric
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
