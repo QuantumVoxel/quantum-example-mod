@@ -27,16 +27,12 @@
 		{
 			"config": "modid.client.mixins.json",
 			"environment": "client"
-		},
-		{
-			"config": "modid.server.mixins.json",
-			"environment": "server"
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.10",
-		"quantum": ">=0.0.5-SNAPSHOT",
-		"java": ">=17"
+		"fabricloader": ">=0.17.0",
+		"quantum": ">=0.1.0-alpha.2025.11.29",
+		"java": ">=25"
 	},
 	"suggests": {
 		"another-mod": "*"
